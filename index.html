@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>INVEST AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 22px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .welcome {
+      margin-bottom: 30px;
+    }
+
+    .welcome h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #6b7280;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 35px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+
+    .summary-card .number {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .red {
+      color: #dc2626;
+    }
+
+    .yellow {
+      color: #d97706;
+    }
+
+    .green {
+      color: #16a34a;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .section-title h2 {
+      font-size: 22px;
+    }
+
+    button {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .portfolio {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+
+    .stock {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #edf0f4;
+    }
+
+    .stock:last-child {
+      border-bottom: none;
+    }
+
+    .stock-name {
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .stock-code {
+      color: #6b7280;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .status {
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      background: #ecfdf5;
+      color: #15803d;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 35px;
+      color: #6b7280;
+    }
+
+    footer {
+      text-align: center;
+      color: #9ca3af;
+      padding: 40px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 18px 20px;
+      }
+
+      .welcome h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div>
+      <div class="logo">INVEST AI</div>
+      <div class="subtitle">AI Investment Intelligence</div>
+    </div>
+
+    <button onclick="alert('登入功能即將加入')">
+      登入
+    </button>
+  </header>
+
+  <main>
+
+    <section class="welcome">
+      <h1>你的投資情報</h1>
+      <p>每天只看真正重要的事情。</p>
+    </section>
+
+    <section class="summary">
+
+      <div class="summary-card">
+        <div>🔴 重大事件</div>
+        <div class="number red">0</div>
+        <div>需要注意的重大消息</div>
+      </div>
+
+      <div class="summary-card">
+        <div>🟡 值得注意</div>
+        <div class="number yellow">0</div>
+        <div>可能影響投資的消息</div>
+      </div>
+
+      <div class="summary-card">
+        <div>🟢 無重大變化</div>
+        <div class="number green">0</div>
+        <div>目前不需要特別處理</div>
+      </div>
+
+    </section>
+
+    <section>
+
+      <div class="section-title">
+        <h2>我的投資組合</h2>
+
+        <button onclick="alert('新增股票功能即將加入')">
+          ＋ 新增股票
+        </button>
+      </div>
+
+      <div class="portfolio">
+
+        <div class="empty">
+          還沒有加入任何股票。
+          <br><br>
+          點擊「＋ 新增股票」開始建立你的投資組合。
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    INVEST AI · Your Personal Investment Intelligence
+  </footer>
+
+</body>
+</html>
