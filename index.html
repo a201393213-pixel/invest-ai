@@ -1251,14 +1251,26 @@ async function handleAuth(){
             throw result.error;
         }
 
-        if(authMode === "signup"){
+      if(authMode === "signup"){
 
-            message.textContent =
-                "註冊成功！請查看 Email 完成驗證。";
+    // Supabase 對已註冊帳號可能不直接回傳 error，
+    // 因此透過 identities 判斷是否為已存在帳號
+    if(result.data?.user && result.data.user.identities?.length === 0){
 
-            message.style.color = "#16a34a";
+        message.textContent =
+            "此 Email 已註冊，請直接登入。";
 
-        }else{
+        message.style.color = "#dc2626";
+
+    }else{
+
+        message.textContent =
+            "註冊成功！請查看 Email 完成驗證。";
+
+        message.style.color = "#16a34a";
+    }
+
+}else{
 
             message.textContent =
                 "登入成功！";
