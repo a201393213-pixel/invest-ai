@@ -1243,7 +1243,10 @@ async function handleAuth(){
             result =
                 await supabaseClient.auth.signUp({
                     email: email,
-                    password: password
+                    password: password,
+                    options: {
+    emailRedirectTo: "https://a201393213-pixel.github.io/invest-ai/"
+}
                 });
         }
 
