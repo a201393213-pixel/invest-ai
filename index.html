@@ -940,6 +940,19 @@ function searchStocks(){
 }
 
 </script>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+    const SUPABASE_URL = "https://katrpkzsfqgnuiclzrrb.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_53yb5HsYXqQ5DobNJ6Dl2Q_k7_WQPzu";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+    console.log("INVEST AI → Supabase connected");
+</script>
 </body>
 </html>
