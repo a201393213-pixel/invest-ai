@@ -841,7 +841,7 @@ function closeModal(){
 }
 
 
-function addStock(){
+async function addStock(){
 
     const ticker =
         document.getElementById("newTicker").value.trim();
@@ -852,7 +852,6 @@ function addStock(){
     const cost =
         document.getElementById("newCost").value.trim();
 
-
     if(!ticker || !company || !cost){
 
         alert("請完整填寫股票資料");
@@ -861,47 +860,87 @@ function addStock(){
 
     }
 
+    const costNumber = Number(cost);
 
-    const table =
-        document.getElementById("stockTable");
+    if(!Number.isFinite(costNumber) || costNumber <= 0){
 
+        alert("持有成本必須是大於 0 的數字");
 
-    const row =
-        document.createElement("tr");
+        return;
 
+    }
 
-    row.innerHTML = `
+    try{
 
-        <td>
+        // 確認目前登入者
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
 
-            <div class="ticker">
-                ${ticker}
-            </div>
+        if(sessionError){
+            throw sessionError;
+        }
 
-            <div class="company">
-                ${company}
-            </div>
+        const user = sessionData.session?.user;
 
-        </td>
+        if(!user){
 
-        <td>
-            等待資料
-        </td>
+            alert("請先登入 INVEST AI");
 
-        <td>
-            -
-        </td>
+            return;
 
-        <td>
-            ${Number(cost).toLocaleString()}
-        </td>
+        }
 
-        <td>
-            -
-        </td>
+        // 寫入 Supabase portfolios
+        const { data, error } =
+            await supabaseClient
+                .from("portfolios")
+                .insert([
+                    {
+                        user_id: user.id,
+                        ticker: ticker,
+                        company_name: company,
+                        avg_cost: costNumber,
+                        quantity: 0
+                    }
+                ])
+                .select();
 
-        <td>
+        if(error){
 
+            console.error("Supabase 新增股票失敗：", error);
+
+            alert(
+                "新增股票失敗：\n\n" +
+                error.message
+            );
+
+            return;
+
+        }
+
+        console.log("股票已寫入 Supabase：", data);
+
+        // 清空輸入框
+        document.getElementById("newTicker").value = "";
+        document.getElementById("newCompany").value = "";
+        document.getElementById("newCost").value = "";
+
+        closeModal();
+
+        alert("股票已成功儲存到 Supabase！");
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "發生錯誤：\n\n" +
+            error.message
+        );
+
+    }
+
+}
             <span class="badge">
                 等待 AI
             </span>
