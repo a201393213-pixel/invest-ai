@@ -973,5 +973,359 @@ function searchStocks(){
 
     console.log("INVEST AI → Supabase connected");
 </script>
+    <!-- ===== Supabase 登入 / 註冊 ===== -->
+
+<div id="authModal" class="auth-modal">
+    <div class="auth-box">
+
+        <button class="auth-close" onclick="closeAuthModal()">×</button>
+
+        <h2 id="authTitle">登入 INVEST AI</h2>
+        <p id="authSubtitle">登入後管理你的投資組合</p>
+
+        <div class="auth-form">
+
+            <label>Email</label>
+            <input
+                type="email"
+                id="authEmail"
+                placeholder="請輸入 Email"
+            >
+
+            <label>密碼</label>
+            <input
+                type="password"
+                id="authPassword"
+                placeholder="請輸入密碼"
+            >
+
+            <button
+                id="authSubmit"
+                class="auth-submit"
+                onclick="handleAuth()"
+            >
+                登入
+            </button>
+
+            <div id="authMessage"></div>
+
+            <button
+                id="authSwitch"
+                class="auth-switch"
+                onclick="switchAuthMode()"
+            >
+                還沒有帳號？立即註冊
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.55);
+    backdrop-filter:blur(5px);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+}
+
+.auth-modal.active{
+    display:flex;
+}
+
+.auth-box{
+    position:relative;
+    width:400px;
+    max-width:90%;
+    background:#ffffff;
+    border-radius:18px;
+    padding:36px;
+    box-shadow:0 20px 60px rgba(0,0,0,.2);
+}
+
+.auth-box h2{
+    margin:0 0 8px;
+    font-size:25px;
+    color:#172033;
+}
+
+.auth-box p{
+    margin:0 0 25px;
+    color:#64748b;
+    font-size:14px;
+}
+
+.auth-close{
+    position:absolute;
+    top:15px;
+    right:18px;
+    background:none;
+    border:none;
+    font-size:28px;
+    color:#64748b;
+    cursor:pointer;
+}
+
+.auth-form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.auth-form label{
+    font-size:14px;
+    font-weight:600;
+    color:#334155;
+    margin-top:5px;
+}
+
+.auth-form input{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid #dbe2ea;
+    border-radius:9px;
+    font-size:15px;
+    outline:none;
+}
+
+.auth-form input:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+.auth-submit{
+    margin-top:12px;
+    padding:13px;
+    border:none;
+    border-radius:9px;
+    background:#2563eb;
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.auth-submit:hover{
+    background:#1d4ed8;
+}
+
+.auth-switch{
+    margin-top:8px;
+    background:none;
+    border:none;
+    color:#2563eb;
+    font-size:14px;
+    cursor:pointer;
+}
+
+#authMessage{
+    min-height:20px;
+    text-align:center;
+    font-size:14px;
+}
+</style>
+
+<script>
+
+let authMode = "login";
+
+/* 開啟登入視窗 */
+function openAuthModal(){
+
+    document
+        .getElementById("authModal")
+        .classList
+        .add("active");
+
+    authMode = "login";
+    updateAuthUI();
+}
+
+/* 關閉登入視窗 */
+function closeAuthModal(){
+
+    document
+        .getElementById("authModal")
+        .classList
+        .remove("active");
+
+    document.getElementById("authMessage").textContent = "";
+}
+
+/* 切換登入 / 註冊 */
+function switchAuthMode(){
+
+    authMode = authMode === "login"
+        ? "signup"
+        : "login";
+
+    updateAuthUI();
+}
+
+/* 更新畫面 */
+function updateAuthUI(){
+
+    const title = document.getElementById("authTitle");
+    const subtitle = document.getElementById("authSubtitle");
+    const submit = document.getElementById("authSubmit");
+    const switchBtn = document.getElementById("authSwitch");
+    const message = document.getElementById("authMessage");
+
+    message.textContent = "";
+
+    if(authMode === "login"){
+
+        title.textContent = "登入 INVEST AI";
+        subtitle.textContent = "登入後管理你的投資組合";
+        submit.textContent = "登入";
+        switchBtn.textContent = "還沒有帳號？立即註冊";
+
+    }else{
+
+        title.textContent = "建立 INVEST AI 帳號";
+        subtitle.textContent = "註冊後即可保存你的投資資料";
+        submit.textContent = "註冊";
+        switchBtn.textContent = "已經有帳號？立即登入";
+    }
+}
+
+/* 登入 / 註冊 */
+async function handleAuth(){
+
+    const email =
+        document.getElementById("authEmail").value.trim();
+
+    const password =
+        document.getElementById("authPassword").value;
+
+    const message =
+        document.getElementById("authMessage");
+
+    if(!email || !password){
+
+        message.textContent = "請輸入 Email 和密碼";
+        message.style.color = "#dc2626";
+        return;
+    }
+
+    if(password.length < 6){
+
+        message.textContent = "密碼至少需要 6 個字元";
+        message.style.color = "#dc2626";
+        return;
+    }
+
+    message.textContent =
+        authMode === "login"
+        ? "登入中..."
+        : "註冊中...";
+
+    message.style.color = "#64748b";
+
+    try{
+
+        let result;
+
+        if(authMode === "login"){
+
+            result =
+                await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+        }else{
+
+            result =
+                await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password
+                });
+        }
+
+        if(result.error){
+            throw result.error;
+        }
+
+        if(authMode === "signup"){
+
+            message.textContent =
+                "註冊成功！請查看 Email 完成驗證。";
+
+            message.style.color = "#16a34a";
+
+        }else{
+
+            message.textContent =
+                "登入成功！";
+
+            message.style.color = "#16a34a";
+
+            setTimeout(() => {
+
+                closeAuthModal();
+                updateAuthButton();
+
+            }, 800);
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        message.textContent =
+            "操作失敗：" + error.message;
+
+        message.style.color = "#dc2626";
+    }
+}
+
+/* 更新右上角按鈕 */
+async function updateAuthButton(){
+
+    const button =
+        document.getElementById("authBtn");
+
+    if(!button) return;
+
+    const { data } =
+        await supabaseClient.auth.getSession();
+
+    if(data.session){
+
+        const email =
+            data.session.user.email || "會員";
+
+        button.textContent = "會員 / 登出";
+
+        button.onclick = async function(){
+
+            await supabaseClient.auth.signOut();
+
+            updateAuthButton();
+        };
+
+    }else{
+
+        button.textContent = "登入 / 註冊";
+
+        button.onclick = openAuthModal;
+    }
+}
+
+/* 網站載入時檢查登入狀態 */
+supabaseClient.auth.onAuthStateChange(
+    function(){
+        updateAuthButton();
+    }
+);
+
+updateAuthButton();
+
+</script>
 </body>
 </html>
